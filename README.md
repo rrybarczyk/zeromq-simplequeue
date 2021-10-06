@@ -6,6 +6,58 @@ Tutorial from [ZeroMQ (ØMQ) Crash Course](https://www.youtube.com/watch?v=UrwtQ
 $ npm i
 ```
 
+## Run
+In a new terminal, start the server by:
+```
+$ npm run start
+>
+> > zeromq-simplequeue@1.0.0 start
+> > node server.js
+>
+> Server is ready listening on port 7000
+> Press any key to start sending the jobs
+```
+
+In a new terminal start the worker by:
+```
+$ npm run worker
+>
+> > zeromq-simplequeue@1.0.0 worker
+> > node worker.js
+
+> Connected to the server.
+```
+
+Multiple workers can (and should) be started, each in their own terminal.
+
+In the terminal that is running the server, press any key to start sending jobs to listening workers.
+
+When running three workers with 11 jobs, the output looks like this:
+
+Worker 1:
+```
+> received job sending job 0
+> received job sending job 3
+> received job sending job 6
+> received job sending job 9
+```
+
+Worker 2:
+```
+> received job sending job 1
+> received job sending job 4
+> received job sending job 7
+> received job sending job 10
+```
+
+Worker 3:
+```
+> received job sending job 2
+> received job sending job 5
+> received job sending job 8
+> received job sending job 11
+```
+
 ## Files
 `server.js`: produces the queue
 `worker.js`: receives the jobs
@@ -40,19 +92,19 @@ The moment the Worker is spun up, it immediately connects to the Server.
 Spin up multiple Workers.
 
 ```
-		     PUSH
-			+--------+              +----------+
-			|        |	----------> | Worker 1 |	PULL
-			|        |              +----------+
-		  |        |
-			|        |              +----------+
-			| Server |	----------> | Worker 2 |	PULL
-			|        |              +----------+
-			|        |
-			|        |              +----------+
-			|        |	----------> | Worker 3 |	PULL
-			|        |              +----------+
-		  +--------+
+    PUSH
++--------+      +----------+
+|        | ---> | Worker 1 |	PULL
+|        |      +----------+
+|        |
+|        |      +----------+
+| Server | ---> | Worker 2 |	PULL
+|        |      +----------+
+|        |
+|        |      +----------+
+|        | ---> | Worker 3 |	PULL
+|        |      +----------+
++--------+
 ```
 
 The server will immediately send. This is exactly like the ROUTER, but slightly different.
@@ -60,13 +112,13 @@ When we connect, there is no array of connections in the server code.
 But when you do SEND, looping to send 100 jobs to the three workers, the messages will send like this:
 
 ```
-		Msg1 -> Worker 1
-		Msg2 -> Worker 2
-		Msg3 -> Worker 3
-		Msg4 -> Worker 1
-		...
-		Msg99  -> Worker 1
-		Msg100 -> Worker 2
+Msg1 -> Worker 1
+Msg2 -> Worker 2
+Msg3 -> Worker 3
+Msg4 -> Worker 1
+...
+Msg99  -> Worker 1
+Msg100 -> Worker 2
 ```
 This is FIFO.
 The queue is: every time a client starts consuming from the queue, that job is gone. It should not go to all clients.
