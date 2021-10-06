@@ -1,0 +1,16 @@
+{
+  "name": "zeromq-simplequeue",
+  "version": "1.0.0",
+  "description": "`server.js`: produces the queue `worker.js`: receives the jobs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "zeromq": "^5.2.8"
+  }
+}
